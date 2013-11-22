@@ -1,6 +1,9 @@
 package com.danvelazco.fbwrapper;
 
 import android.app.AlertDialog;
+import android.app.DialogFragment;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,10 +11,13 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.*;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import com.danvelazco.fbwrapper.activity.BaseFacebookWebViewActivity;
 import com.danvelazco.fbwrapper.preferences.FacebookPreferences;
@@ -138,7 +144,8 @@ public class FbWrapper extends BaseFacebookWebViewActivity {
         findViewById(R.id.menu_item_refresh).setOnClickListener(buttonsListener);
         findViewById(R.id.menu_item_newsfeed).setOnClickListener(buttonsListener);
         findViewById(R.id.menu_items_notifications).setOnClickListener(buttonsListener);
-        findViewById(R.id.menu_items_messages).setOnClickListener(buttonsListener);
+        findViewById(R.id.menu_item_messages).setOnClickListener(buttonsListener);
+        findViewById(R.id.menu_item_tag).setOnClickListener(buttonsListener);
         findViewById(R.id.menu_share_this).setOnClickListener(buttonsListener);
         findViewById(R.id.menu_preferences).setOnClickListener(buttonsListener);
         findViewById(R.id.menu_about).setOnClickListener(buttonsListener);
@@ -313,8 +320,11 @@ public class FbWrapper extends BaseFacebookWebViewActivity {
                 case R.id.menu_items_notifications:
                     loadNewPage(mDomainToUse + URL_PAGE_NOTIFICATIONS);
                     break;
-                case R.id.menu_items_messages:
+                case R.id.menu_item_messages:
                 	loadNewPage(mDomainToUse + URL_PAGE_MESSAGES);
+                	break;
+                case R.id.menu_item_tag:
+                	tagFriend();
                 	break;
                 case R.id.menu_share_this:
                     shareCurrentPage();
@@ -352,6 +362,29 @@ public class FbWrapper extends BaseFacebookWebViewActivity {
                     }
                 });
         alertDialog.show();
+    }
+    
+    /**
+     * Search for a friend and insert tagging syntax.
+     */
+    private void tagFriend() {
+    	FragmentTransaction ft = getFragmentManager().beginTransaction();
+        Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        // Create and show the dialog.
+        DialogFragment newFragment = TagFriendDialogFragment.newInstance();
+        newFragment.show(ft, "dialog");
+    }
+    
+    public void friendTagged(String text) {    	
+    	// send text to WebView
+    	for (int i = 0; i < text.length(); ++i) {
+    		mWebView.dispatchKeyEvent(new KeyEvent(100, text.substring(i, i+1), 1, 0));
+    	}
     }
 
     /**

@@ -39,6 +39,8 @@ import com.danvelazco.fbwrapper.webview.FacebookWebView;
 import com.danvelazco.fbwrapper.webview.FacebookWebViewClient;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 /**
  * Base activity that uses a {@link FacebookWebView} to load the Facebook
@@ -59,7 +61,18 @@ public abstract class BaseFacebookWebViewActivity extends Activity implements
     protected final static String INIT_URL_DESKTOP = "https://www.facebook.com";
     protected final static String URL_PAGE_NOTIFICATIONS = "/notifications.php";
     protected final static String URL_PAGE_MESSAGES = "/messages";
-
+    
+    protected final static String DEBUG_ACCESS_TOKEN = "CAACEdEose0cBAMqHDoZBOX8ZBiRR0urfhOgLKgGZA3p31jcrLgqTWe03ZBXpy8LA5Le6FzkQhncbluyl69zexnfezAD9stFufic6kPuiobGfPR8a0xsaz8Mh5WH3LfBw6xn7ZBOax6GeMtWjzsQWUVdTTO7xRv4tEqjF9RgwvBglKa4pn2EbZBm0yiAbXacHrvmLLTYoVxDQZDZD";
+    public static String URL_GRAPH_SEARCH(String name) {
+    	try {
+			return "https://graph.facebook.com/fql?access_token=" + DEBUG_ACCESS_TOKEN + "&q=" + URLEncoder.encode("select uid, name, first_name, last_name from user where uid in (SELECT uid2 FROM friend WHERE uid1 = me()) and strpos(lower(name), '" + name + "')>=0 limit 10", "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return "";
+		}
+    }
+    
     // URL for Sharing Links
     // u = url & t = title
     protected final static String URL_PAGE_SHARE_LINKS = "/sharer.php?u=%s&t=%s";
