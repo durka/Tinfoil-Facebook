@@ -25,7 +25,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -34,6 +36,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -55,6 +59,12 @@ public class AccessTokenDialogFragment extends DialogFragment {
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.access_token_fragment_dialog, container, false);
+        
+        int width = getResources().getDisplayMetrics().widthPixels;
+        int height = getResources().getDisplayMetrics().heightPixels;
+        v.findViewById(R.id.access_layout).setMinimumHeight((int) (height*0.7));
+        v.findViewById(R.id.access_layout).setMinimumWidth((int) (width*0.9));
+        getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         
         mWebView = (WebView)v.findViewById(R.id.access_webview);
         mWebView.setWebViewClient(new WebViewClient() {

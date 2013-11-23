@@ -67,7 +67,7 @@ public abstract class BaseFacebookWebViewActivity extends Activity implements
     public static String URL_GRAPH_SEARCH(Context ctx, String name) {
     	try {
     		String access_token = PreferenceManager.getDefaultSharedPreferences(ctx).getString("API_KEY", "");
-			return "https://graph.facebook.com/fql?access_token=" + access_token + "&q=" + URLEncoder.encode("select uid, name, first_name, last_name from user where uid in (SELECT uid2 FROM friend WHERE uid1 = me()) and strpos(lower(name), '" + name + "')>=0 limit 10", "UTF-8");
+			return "https://graph.facebook.com/fql?access_token=" + access_token + "&q=" + URLEncoder.encode("select uid, name, first_name, last_name from user where uid in (SELECT uid2 FROM friend WHERE uid1 = me()) and strpos(lower(name), '" + name.toLowerCase() + "')>=0 limit 10", "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

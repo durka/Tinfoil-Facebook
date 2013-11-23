@@ -23,6 +23,7 @@ import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
@@ -93,10 +94,7 @@ public class FacebookPreferences extends PreferenceActivity {
                 newFragment.show(ft, "api_dialog");
                 
                 // un-check the preference, until such time as the dialog manages to get an access token
-                PreferenceManager.getDefaultSharedPreferences(this)
-                	.edit()
-                	.putBoolean("api_dialog", false)
-                	.commit();
+            	((CheckBoxPreference)findPreference("prefs_api")).setChecked(false);
         	} else {
         		PreferenceManager.getDefaultSharedPreferences(this)
         			.edit()
@@ -110,9 +108,9 @@ public class FacebookPreferences extends PreferenceActivity {
     
     public void received_access_token(String token) {
     	Log.d("FP", "access token: " + token);
+    	((CheckBoxPreference)findPreference("prefs_api")).setChecked(true);
     	PreferenceManager.getDefaultSharedPreferences(this)
     		.edit()
-    		.putBoolean("api_dialog", true)
     		.putString("API_KEY", token)
     		.commit();
     }

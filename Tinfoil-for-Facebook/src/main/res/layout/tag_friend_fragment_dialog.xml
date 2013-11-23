@@ -18,28 +18,7 @@
     <ListView
         android:id="@+id/tag_list"
         android:layout_width="match_parent"
-        android:layout_height="218dp" >
+        android:layout_height="186dp" >
     </ListView>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <Button
-            android:id="@+id/tag_full"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <Button
-            android:id="@+id/tag_first"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        
-        
-        <Button
-            android:id="@+id/tag_last"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
 
 </LinearLayout>

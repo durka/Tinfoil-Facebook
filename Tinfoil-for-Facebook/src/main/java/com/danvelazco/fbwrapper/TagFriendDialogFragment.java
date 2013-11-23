@@ -25,17 +25,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.WindowManager.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class TagFriendDialogFragment extends DialogFragment {
 	
 	private class GraphSearchTask extends AsyncTask<String, Void, String> {
 
+		@Override
+		protected void onPreExecute() {
+			mID = -1;
+			tag_list.setAdapter( new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.simple_black_list_item, new String[]{"..."}));
+		}
+		
 		@Override
 		protected String doInBackground(String... names) {
 			String name = names[0];
@@ -77,6 +85,7 @@ public class TagFriendDialogFragment extends DialogFragment {
 				}
 				
 		        tag_list.setAdapter(new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.simple_black_list_item, mFulls));
+		        mID = 0;
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -88,7 +97,7 @@ public class TagFriendDialogFragment extends DialogFragment {
 	private View.OnClickListener mClickListener = null;
     private TextWatcher mTextListener = null;
     private GraphSearchTask mTask = null;
-    private String mID = "";
+    private int mID = 0;
 	private ArrayList<String> mIDs, mFulls, mFirsts, mLasts;
 	private EditText tag_in;
 	private ListView tag_list;
@@ -110,9 +119,10 @@ public class TagFriendDialogFragment extends DialogFragment {
         tag_in = (EditText)v.findViewById(R.id.tag_in);
         tag_list = (ListView)v.findViewById(R.id.tag_list);
         
+        getDialog().getWindow().setSoftInputMode(LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        
         // List view adapter
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.simple_black_list_item, new String[]{"test 1", "test 2"});
-        ((ListView)v.findViewById(R.id.tag_list)).setAdapter(adapter);
+        ((ListView)v.findViewById(R.id.tag_list)).setAdapter( new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.simple_black_list_item, new String[]{"enter name above"}));
         
         mIDs = new ArrayList<String>();
         mFulls = new ArrayList<String>();
@@ -120,22 +130,6 @@ public class TagFriendDialogFragment extends DialogFragment {
         mLasts = new ArrayList<String>();
 
         // listeners
-        mClickListener = new OnClickListener() {
-            public void onClick(View clicked) {
-                // When button is clicked, call up to owning activity.
-            	
-            	String name;
-            	if (clicked.getId() == R.id.tag_full) {
-            		name = "0";
-            	} else {
-            		name = ((Button)clicked).getText().toString();
-            	}
-            	String str = "@[" + mID + ":" + name + "]";
-            	
-                ((FbWrapper)getActivity()).friendTagged(str);
-                dismiss();
-            }
-        };
         mTextListener = new TextWatcher() {
 
     		@Override
@@ -158,24 +152,42 @@ public class TagFriendDialogFragment extends DialogFragment {
     				mTask = new GraphSearchTask();
     				mTask.execute(s.toString());
     			}
-    			
-    			//((Button)v.findViewById(R.id.tag_full)).setText(s);
-    			//((Button)v.findViewById(R.id.tag_first)).setText(s);
-    			//((Button)v.findViewById(R.id.tag_last)).setText(s);
     		}
         };
-        ((Button)v.findViewById(R.id.tag_full)).setOnClickListener(mClickListener);
-        ((Button)v.findViewById(R.id.tag_first)).setOnClickListener(mClickListener);
-        ((Button)v.findViewById(R.id.tag_last)).setOnClickListener(mClickListener);
-        ((EditText)v.findViewById(R.id.tag_in)).addTextChangedListener(mTextListener);
-        ((ListView)v.findViewById(R.id.tag_list)).setOnItemClickListener(new OnItemClickListener() {
+
+        tag_in.addTextChangedListener(mTextListener);
+        tag_list.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				mID = mIDs.get(position);
-				((Button)v.findViewById(R.id.tag_full)).setText(mFulls.get(position));
-				((Button)v.findViewById(R.id.tag_first)).setText(mFirsts.get(position));
-				((Button)v.findViewById(R.id.tag_last)).setText(mLasts.get(position));
+				if (mID == -1) {
+					return;
+				}
+				if (mID != 0) {
+					String name;
+					switch (position) {
+					case 0:
+						name = "0";
+						break;
+					case 1:
+						name = mFirsts.get(mID);
+						break;
+					case 2:
+						name = mLasts.get(mID);
+						break;
+					default:
+						mID = 0;
+						return;
+					}
+					String str = "@[" + mIDs.get(mID) + ":" + name + "]";
+	            	
+	                ((FbWrapper)getActivity()).friendTagged(str);
+	                dismiss();
+				} else {
+					mID = position;
+				
+					tag_list.setAdapter( new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.simple_black_list_item, new String[]{"tag as: " + mFulls.get(position), "tag as: " + mFirsts.get(position), "tag as: " + mLasts.get(position)}));
+				}
 			}
         	
         });
