@@ -44,8 +44,8 @@ public class TagFriendDialogFragment extends DialogFragment {
             String json = "";
             try {
                 String line = "";
-                Log.d("TFD", BaseFacebookWebViewActivity.URL_GRAPH_SEARCH(name));
-                HttpGet request = new HttpGet(BaseFacebookWebViewActivity.URL_GRAPH_SEARCH(name));
+                Log.d("TFD", BaseFacebookWebViewActivity.URL_GRAPH_SEARCH(getActivity(), name));
+                HttpGet request = new HttpGet(BaseFacebookWebViewActivity.URL_GRAPH_SEARCH(getActivity(), name));
                 HttpResponse response = client.execute(request);
                 BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
                 while ((line = rd.readLine()) != null) {

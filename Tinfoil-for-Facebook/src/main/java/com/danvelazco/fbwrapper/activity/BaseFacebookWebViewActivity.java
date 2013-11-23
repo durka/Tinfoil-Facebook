@@ -24,6 +24,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.KeyEvent;
 import android.view.View;
 import android.webkit.CookieSyncManager;
@@ -62,10 +63,11 @@ public abstract class BaseFacebookWebViewActivity extends Activity implements
     protected final static String URL_PAGE_NOTIFICATIONS = "/notifications.php";
     protected final static String URL_PAGE_MESSAGES = "/messages";
     
-    protected final static String DEBUG_ACCESS_TOKEN = "CAACEdEose0cBAMqHDoZBOX8ZBiRR0urfhOgLKgGZA3p31jcrLgqTWe03ZBXpy8LA5Le6FzkQhncbluyl69zexnfezAD9stFufic6kPuiobGfPR8a0xsaz8Mh5WH3LfBw6xn7ZBOax6GeMtWjzsQWUVdTTO7xRv4tEqjF9RgwvBglKa4pn2EbZBm0yiAbXacHrvmLLTYoVxDQZDZD";
-    public static String URL_GRAPH_SEARCH(String name) {
+    protected final static String DEBUG_ACCESS_TOKEN = "CAACEdEose0cBAMDYT6fmTjrpgUPRmvx6k30geaNCtWYyEOy9hFw1ma4jq6yHmiJ55ZCJsMhQOrlrGyAK1WNI0ggp11ZBig7UGNZCwd7wxYkZASyXL3xEZBVncwwlvqnxGHk5eeZCSHp86dlcwD1lS5wNO9b6Go2P4TlU337IexAq4opg1qZAItmUOTgBLDgJJwQuXICprEm9gZDZD";
+    public static String URL_GRAPH_SEARCH(Context ctx, String name) {
     	try {
-			return "https://graph.facebook.com/fql?access_token=" + DEBUG_ACCESS_TOKEN + "&q=" + URLEncoder.encode("select uid, name, first_name, last_name from user where uid in (SELECT uid2 FROM friend WHERE uid1 = me()) and strpos(lower(name), '" + name + "')>=0 limit 10", "UTF-8");
+    		String access_token = PreferenceManager.getDefaultSharedPreferences(ctx).getString("API_KEY", "");
+			return "https://graph.facebook.com/fql?access_token=" + access_token + "&q=" + URLEncoder.encode("select uid, name, first_name, last_name from user where uid in (SELECT uid2 FROM friend WHERE uid1 = me()) and strpos(lower(name), '" + name + "')>=0 limit 10", "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -57,7 +57,9 @@
     <string name="pref_hide_ab_sry">Automatically hide the ActionBar while scrolling down or not using. Scroll back up to make it appear again.</string>
     <string name="prefs_mobile_site">Mobile/Desktop site</string>
     <string name="prefs_mobile_site_sry">Force the use of the mobile or desktop site</string>
-
+	<string name="prefs_api">Use Facebook API features</string>
+	<string name="prefs_api_sry">If enabled, Tinfoil will request a Facebook API access token to provide features such as inline friend tagging.</string>
+    
     <array name="prefs_mobile_site_list">
         <item>Auto</item>
         <item>Force mobile site</item>

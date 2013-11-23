@@ -369,7 +369,7 @@ public class FbWrapper extends BaseFacebookWebViewActivity {
      */
     private void tagFriend() {
     	FragmentTransaction ft = getFragmentManager().beginTransaction();
-        Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+        Fragment prev = getFragmentManager().findFragmentByTag("tag_dialog");
         if (prev != null) {
             ft.remove(prev);
         }
@@ -377,7 +377,7 @@ public class FbWrapper extends BaseFacebookWebViewActivity {
 
         // Create and show the dialog.
         DialogFragment newFragment = TagFriendDialogFragment.newInstance();
-        newFragment.show(ft, "dialog");
+        newFragment.show(ft, "tag_dialog");
     }
     
     public void friendTagged(String text) {    	
